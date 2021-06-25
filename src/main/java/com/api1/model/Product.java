@@ -1,21 +1,19 @@
 package com.api1.model;
 
-import java.sql.Date;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class Product {
 
+	Integer id;
+	@NotNull(message = "The Product Id cannot be empty")
+	@Size(max = 10, min = 1, message = "The id should be in range of 1 to 10 characters")
 	String productId;
+	@NotNull(message = "The Product Name cannot be empty")
+	@Size(max = 10, min = 1, message = "The name should be in range of 1 to 10 characters")
 	String productName;
-	Date productExpiryDate;
-
-	public Product() {
-	}
-
-	public Product(String productId, String productName, Date productExpiryDate) {
-		this.productId = productId;
-		this.productName = productName;
-		this.productExpiryDate = productExpiryDate;
-	}
+	@NotNull(message = "The Product Expiry Date cannot be empty")
+	String productExpiryDate;
 
 	public String getProductId() {
 		return productId;
@@ -23,6 +21,14 @@ public class Product {
 
 	public void setProductId(String productId) {
 		this.productId = productId;
+	}
+
+	public String getProductExpiryDate() {
+		return productExpiryDate;
+	}
+
+	public void setProductExpiryDate(String productExpiryDate) {
+		this.productExpiryDate = productExpiryDate;
 	}
 
 	public String getProductName() {
@@ -33,12 +39,12 @@ public class Product {
 		this.productName = productName;
 	}
 
-	public Date getProductExpiryDate() {
-		return productExpiryDate;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setProductExpiryDate(Date productExpiryDate) {
-		this.productExpiryDate = productExpiryDate;
+	public void setId(Integer id) {
+		this.id = id;
 	}
-	
+
 }
