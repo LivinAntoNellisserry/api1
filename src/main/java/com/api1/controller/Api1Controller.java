@@ -39,4 +39,16 @@ public class Api1Controller {
 
 	}
 
+	@PostMapping("/update")
+	@ApiOperation(value = "Update Product")
+	public ResponseEntity<?> updateProduct(@RequestBody @Valid Product product) {
+		return new ResponseEntity<Product>(serv.updateProduct(product), HttpStatus.OK);
+	}
+
+	@GetMapping("/delete/{productId}")
+	@ApiOperation(value = "Delete Product")
+	public ResponseEntity<?> deleteProduct(@PathVariable String productId) {
+		return new ResponseEntity<String>(serv.deleteProduct(productId), HttpStatus.OK);
+	}
+
 }
