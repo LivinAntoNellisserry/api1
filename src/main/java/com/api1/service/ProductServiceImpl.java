@@ -4,7 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.api1.exception.ProductAlreadyPresentException;
+import com.api1.exception.ProductNotDeletedException;
+import com.api1.exception.ProductNotFoundException;
 import com.api1.model.Product;
+import com.api1.model.ResponseHandler;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -17,28 +21,45 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	WebClient.Builder webClientBuilder;
 
-	public Product getProductById(String productId) {
+	public Product getProductById(String productId) throws ProductNotFoundException {
 
-		return webClientBuilder.build().get().uri(GET_PRODUCT_BY_ID_URI, productId).retrieve().bodyToMono(Product.class)
-				.block();
+		ResponseHandler response = webClientBuilder.build().get().uri(GET_PRODUCT_BY_ID_URI, productId).retrieve()
+				.bodyToMono(ResponseHandler.class).block();
+		if (response.getResponseType().equals("FAILED")) {
+			throw new ProductNotFoundException(response.getResponseMessage());
+		}
+		return response.getResponseProduct();
 
 	}
 
-	public Product addProduct(Product product) {
+	public Product addProduct(Product product) throws ProductAlreadyPresentException {
 
-		return webClientBuilder.build().post().uri(POST_ADD_PRODUCT_URI).bodyValue(product).retrieve()
-				.bodyToMono(Product.class).block();
+		ResponseHandler response = webClientBuilder.build().post().uri(POST_ADD_PRODUCT_URI).bodyValue(product)
+				.retrieve().bodyToMono(ResponseHandler.class).block();
+		if (response.getResponseType().equals("FAILED")) {
+			throw new ProductAlreadyPresentException(response.getResponseMessage());
+		}
+		return response.getResponseProduct();
+
 	}
 
-	public Product updateProduct(Product product) {
-		return webClientBuilder.build().post().uri(POST_UPDATE_PRODUCT_URI).bodyValue(product).retrieve()
-				.bodyToMono(Product.class).block();
+	public Product updateProduct(Product product) throws ProductNotFoundException {
+		ResponseHandler response = webClientBuilder.build().post().uri(POST_UPDATE_PRODUCT_URI).bodyValue(product)
+				.retrieve().bodyToMono(ResponseHandler.class).block();
+		if (response.getResponseType().equals("FAILED")) {
+			throw new ProductNotFoundException(response.getResponseMessage());
+		}
+		return response.getResponseProduct();
 	}
 
-	public String deleteProduct(String productId) {
-		return webClientBuilder.build().get().uri(GET_DELETE_PRODUCT_URI, productId).retrieve()
-				.bodyToMono(String.class).block();
-		
+	public String deleteProduct(String productId) throws ProductNotDeletedException {
+		ResponseHandler response = webClientBuilder.build().get().uri(GET_DELETE_PRODUCT_URI, productId).retrieve()
+				.bodyToMono(ResponseHandler.class).block();
+		if (response.getResponseType().equals("FAILED")) {
+			throw new ProductNotDeletedException(response.getResponseMessage());
+		}
+		return response.getResponseMessage();
+
 	}
 
 }
