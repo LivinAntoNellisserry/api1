@@ -50,4 +50,10 @@ public class Product {
 		this.id = id;
 	}
 
+	@Override
+	public String toString() {
+		return "Product [id=" + id + ", productId=" + productId + ", productName=" + productName
+				+ ", productExpiryDate=" + productExpiryDate + "]";
+	}
+
 }

@@ -22,6 +22,7 @@ import com.api1.exception.ProductAlreadyPresentException;
 import com.api1.exception.ProductNotDeletedException;
 import com.api1.exception.ProductNotFoundException;
 import com.api1.model.Product;
+import com.api1.model.View;
 import com.api1.service.ProductService;
 
 import io.swagger.annotations.Api;
@@ -51,7 +52,7 @@ public class Api1Controller {
 	@ApiOperation(value = "Search by Product ID")
 	public ResponseEntity<?> getProductById(@PathVariable String productId) {
 		try {
-			return new ResponseEntity<Product>(serv.getProductById(productId), HttpStatus.OK);
+			return new ResponseEntity<View>(serv.getProductById(productId), HttpStatus.OK);
 		} catch (ProductNotFoundException e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
 		}
