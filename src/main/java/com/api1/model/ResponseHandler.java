@@ -1,20 +1,15 @@
 package com.api1.model;
 
-
+/**
+ * 
+ * ResponseHandle Class handles the response
+ *
+ */
 public class ResponseHandler {
 
 	String responseType;
 	String responseMessage;
-	Product responseProduct;
-
-	public ResponseHandler() {
-	}
-
-	public ResponseHandler(String responseType, String responseMessage, Product responseProduct) {
-		this.responseType = responseType;
-		this.responseMessage = responseMessage;
-		this.responseProduct = responseProduct;
-	}
+	Product productResponse;
 
 	public String getResponseType() {
 		return responseType;
@@ -32,12 +27,18 @@ public class ResponseHandler {
 		this.responseMessage = responseMessage;
 	}
 
-	public Product getResponseProduct() {
-		return responseProduct;
+	public Product getProductResponse() {
+		return productResponse;
 	}
 
-	public void setResponseProduct(Product responseProduct) {
-		this.responseProduct = responseProduct;
+	public void setProductResponse(Product productResponse) {
+		this.productResponse = productResponse;
+	}
+
+	@Override
+	public String toString() {
+		return "ResponseHandler [responseType=" + responseType + ", responseMessage=" + responseMessage
+				+ ", productResponse=" + productResponse + "]";
 	}
 
 }
