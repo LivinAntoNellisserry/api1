@@ -1,10 +1,11 @@
 package com.api1.model;
+
 /**
  * 
  * View Class to get product as well as status
  *
  */
-public class View {
+public class Response {
 
 	Product product;
 	String status;
@@ -27,7 +28,7 @@ public class View {
 
 	@Override
 	public String toString() {
-		return "View [product=" + product + ", status=" + status + "]";
+		return "Response [product=" + product + ", status=" + status + "]";
 	}
 
 }

@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.api1.model.Product;
-import com.api1.model.View;
+import com.api1.model.Response;
 import com.api1.service.ProductService;
 import com.google.gson.Gson;
 
@@ -34,7 +34,7 @@ class Api1ControllerTest {
 	private Api1Controller controller;
 
 	Product product;
-	View view;
+	Response view;
 
 	@BeforeEach
 	public void setUp() {
@@ -44,7 +44,7 @@ class Api1ControllerTest {
 		product.setProductName("Noodles");
 		product.setProductExpiryDate("2021-08-12");
 
-		view = new View();
+		view = new Response();
 		view.setProduct(product);
 		view.setStatus("NOT EXPIRED");
 

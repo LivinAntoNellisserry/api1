@@ -4,7 +4,7 @@ import com.api1.exception.ProductAlreadyPresentException;
 import com.api1.exception.ProductNotDeletedException;
 import com.api1.exception.ProductNotFoundException;
 import com.api1.model.Product;
-import com.api1.model.View;
+import com.api1.model.Response;
 
 public interface ProductService {
 	/**
@@ -14,7 +14,7 @@ public interface ProductService {
 	 * @return view returns a view of product with status
 	 * @throws ProductNotFoundException
 	 */
-	public View getProductById(String productId) throws ProductNotFoundException;
+	public Response getProductById(String productId) throws ProductNotFoundException;
 
 	/**
 	 * Method to Add Product

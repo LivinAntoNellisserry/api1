@@ -12,7 +12,7 @@ import com.api1.exception.ProductNotDeletedException;
 import com.api1.exception.ProductNotFoundException;
 import com.api1.model.Product;
 import com.api1.model.ResponseHandler;
-import com.api1.model.View;
+import com.api1.model.Response;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	WebClient.Builder webClientBuilder;
 
-	public View getProductById(String productId) throws ProductNotFoundException {
+	public Response getProductById(String productId) throws ProductNotFoundException {
 		log.info("Called getProductById service");
 
 		ResponseHandler response = webClientBuilder.build().get().uri(GET_PRODUCT_BY_ID_URI, productId).retrieve()
@@ -98,8 +98,8 @@ public class ProductServiceImpl implements ProductService {
 	 * @param response input the response
 	 * @return view returns the view
 	 */
-	private View getView(ResponseHandler response) {
-		View view = new View();
+	private Response getView(ResponseHandler response) {
+		Response view = new Response();
 		Product product = response.getProductResponse();
 		view.setProduct(product);
 		view.setStatus(response.getResponseMessage());
