@@ -1,4 +1,4 @@
-package com.api1.exception;
+package com.api1.config;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class ValidationFailureHandler {
+public class Api1ControllerAdvisor {
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<?> validationError(MethodArgumentNotValidException ex) {
