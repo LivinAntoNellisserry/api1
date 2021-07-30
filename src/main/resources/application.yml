@@ -1,17 +1,17 @@
 server:
   port: 8081
-  
+spring:
+  application:
+    name: Api1
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
 get_product_by_id:
   url: http://localhost:8082/api2/search/{productId}
-
 post_add_product:
   url: http://localhost:8082/api2/add
-  
 post_update_product:
   url: http://localhost:8082/api2/update
-  
 get_delete_product:
   url: http://localhost:8082/api2/delete/{productId}
-  
-
-  
