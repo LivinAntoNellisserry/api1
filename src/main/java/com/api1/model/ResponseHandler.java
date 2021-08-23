@@ -2,7 +2,8 @@ package com.api1.model;
 
 /**
  * 
- * ResponseHandle Class handles the response
+ * ResponseHandler Class. Handles the response from an end point. Contains
+ * responseType, responseMessage and productResponse as variables.
  *
  */
 public class ResponseHandler {
