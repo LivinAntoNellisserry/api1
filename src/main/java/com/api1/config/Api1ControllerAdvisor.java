@@ -10,9 +10,14 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * 
+ * Api1ControllerAdvisor Class.
+ *
+ */
 @RestControllerAdvice
 public class Api1ControllerAdvisor {
-	
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<?> validationError(MethodArgumentNotValidException ex) {
 		BindingResult result = ex.getBindingResult();

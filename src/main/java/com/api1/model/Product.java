@@ -5,6 +5,12 @@ import javax.validation.constraints.Size;
 
 import com.api1.validator.ProductExpiryDate;
 
+/**
+ * 
+ * Product Class. Contains id, productId, productName and productExpiryDate as
+ * variables.
+ *
+ */
 public class Product {
 
 	Integer id;

@@ -3,6 +3,7 @@ package com.api1.controller;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -59,14 +60,14 @@ class Api1ControllerTest {
 
 	@Test
 	public void addProductTest() throws Exception {
-		when(service.addProduct(product)).thenReturn(product);
+		when(service.addProduct(product)).thenReturn(view);
 		mock.perform(MockMvcRequestBuilders.post("/api1/add").contentType(MediaType.APPLICATION_JSON)
 				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isCreated());
 	}
 
 	@Test
 	public void updateProductTest() throws Exception {
-		when(service.updateProduct(product)).thenReturn(product);
+		when(service.updateProduct(product)).thenReturn(view);
 		mock.perform(MockMvcRequestBuilders.post("/api1/update").contentType(MediaType.APPLICATION_JSON)
 				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
 	}
