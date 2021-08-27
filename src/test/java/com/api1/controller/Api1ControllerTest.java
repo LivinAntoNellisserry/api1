@@ -2,13 +2,18 @@ package com.api1.controller;
 
 import static org.mockito.Mockito.when;
 
+import java.sql.Date;
+import java.time.LocalDate;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -16,6 +21,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.api1.exception.ProductAlreadyPresentException;
+import com.api1.exception.ProductNotDeletedException;
+import com.api1.exception.ProductNotFoundException;
 import com.api1.model.Product;
 import com.api1.model.Response;
 import com.api1.service.ProductService;
@@ -35,50 +43,106 @@ class Api1ControllerTest {
 	private Api1Controller controller;
 
 	Product product;
-	Response view;
+	Response response;
 
 	@BeforeEach
 	public void setUp() {
+
 		product = new Product();
 		product.setId(1);
 		product.setProductId("G1");
 		product.setProductName("Noodles");
-		product.setProductExpiryDate("2021-08-12");
+		product.setProductExpiryDate(Date.valueOf(LocalDate.now()).toString());
 
-		view = new Response();
-		view.setProduct(product);
-		view.setStatus("NOT EXPIRED");
+		response = new Response();
+		response.setProduct(product);
+		response.setStatus("NOT EXPIRED");
 
+	}
+	
+	@AfterEach
+	public void tearDown()
+	{
+		product = null;
+		response = null;
 	}
 
 	@Test
-	public void getProductByIdTest() throws Exception {
-		when(service.getProductById(product.getProductId())).thenReturn(view);
+	public void getProductById() throws Exception {
+		System.out.println("1");
+		when(service.getProductById(product.getProductId())).thenReturn(response);
 		mock.perform(MockMvcRequestBuilders.get("/api1/search/G1").contentType(MediaType.APPLICATION_JSON)
 				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
-	public void addProductTest() throws Exception {
-		when(service.addProduct(product)).thenReturn(view);
+	public void addProduct() throws Exception {
+		System.out.println("2");
+		when(service.addProduct(product)).thenReturn(response);
 		mock.perform(MockMvcRequestBuilders.post("/api1/add").contentType(MediaType.APPLICATION_JSON)
-				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isCreated());
+				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
-	public void updateProductTest() throws Exception {
-		when(service.updateProduct(product)).thenReturn(view);
+	public void updateProduct() throws Exception {
+		System.out.println("3");
+		when(service.updateProduct(product)).thenReturn(response);
 		mock.perform(MockMvcRequestBuilders.post("/api1/update").contentType(MediaType.APPLICATION_JSON)
 				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
-	public void deleteProductTest() throws Exception {
+	public void deleteProduct() throws Exception {
+		System.out.println("4");
 		product.setProductExpiryDate("2020-06-25");
 		when(service.deleteProduct(product.getProductId())).thenReturn("SUCCESS");
 		mock.perform(MockMvcRequestBuilders.get("/api1/delete/G1").contentType(MediaType.APPLICATION_JSON)
 				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
 
+	}
+
+	@Test
+	public void getProductNotPresent() throws Exception {
+		System.out.println("5");
+
+		when(service.getProductById("F1")).thenThrow(new ProductNotFoundException("PRODUCT ABSENT"));
+		mock.perform(MockMvcRequestBuilders.get("/api1/search/F1").contentType(MediaType.APPLICATION_JSON)
+				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	public void addProductAlreadyPresent() throws Exception {
+		System.out.println("6");
+		when(service.addProduct(product)).thenThrow(new ProductAlreadyPresentException("PRODUCT ALREADY PRESENT"));
+		mock.perform(MockMvcRequestBuilders.post("/api1/add").contentType(MediaType.APPLICATION_JSON)
+				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	public void updateProductNotPresent() throws Exception {
+		System.out.println("7");
+		when(service.updateProduct(product)).thenThrow(new ProductNotFoundException("PRODUCT NOT PRESENT"));
+		mock.perform(MockMvcRequestBuilders.post("/api1/update").contentType(MediaType.APPLICATION_JSON)
+				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	public void deleteProductNotPresent() throws Exception {
+		System.out.println("8");
+		when(service.deleteProduct(product.getProductId()))
+				.thenThrow(new ProductNotDeletedException("PRODUCT NOT PRESENT"));
+		mock.perform(MockMvcRequestBuilders.get("/api1/delete/G1").contentType(MediaType.APPLICATION_JSON)
+				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
+
+	}
+
+	@Test
+	public void deleteProductNotExpired() throws Exception {
+		System.out.println("9");
+		when(service.deleteProduct(product.getProductId()))
+				.thenThrow(new ProductNotDeletedException("PRODUCT NOT EXPIRED"));
+		mock.perform(MockMvcRequestBuilders.get("/api1/delete/G1").contentType(MediaType.APPLICATION_JSON)
+				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 }

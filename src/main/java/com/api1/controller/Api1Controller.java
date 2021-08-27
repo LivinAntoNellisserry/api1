@@ -50,6 +50,7 @@ public class Api1Controller {
 			Response response = new Response();
 			response.setProduct(null);
 			response.setStatus(e.getMessage());
+			System.out.println("=========getProduct=========");
 			return new ResponseEntity<Response>(response, HttpStatus.OK);
 		}
 	}
@@ -66,11 +67,12 @@ public class Api1Controller {
 	public ResponseEntity<Response> addProduct(@RequestBody @Valid Product product) {
 
 		try {
-			return new ResponseEntity<Response>(serv.addProduct(product), HttpStatus.CREATED);
+			return new ResponseEntity<Response>(serv.addProduct(product), HttpStatus.OK);
 		} catch (ProductAlreadyPresentException e) {
 			Response response = new Response();
 			response.setProduct(null);
 			response.setStatus(e.getMessage());
+			System.out.println("=======add===========");
 			return new ResponseEntity<Response>(response, HttpStatus.OK);
 		}
 
@@ -92,6 +94,7 @@ public class Api1Controller {
 			Response response = new Response();
 			response.setProduct(null);
 			response.setStatus(e.getMessage());
+			System.out.println("========update==========");
 			return new ResponseEntity<Response>(response, HttpStatus.OK);
 		}
 	}
@@ -108,6 +111,7 @@ public class Api1Controller {
 		try {
 			return new ResponseEntity<String>(serv.deleteProduct(productId), HttpStatus.OK);
 		} catch (ProductNotDeletedException e) {
+			System.out.println("========delete==========");
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
 		}
 	}
