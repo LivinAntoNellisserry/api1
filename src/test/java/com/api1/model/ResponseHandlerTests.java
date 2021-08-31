@@ -12,7 +12,7 @@ public class ResponseHandlerTests {
 
 	ResponseHandler responseHandler;
 	ProductClone productClone;
-	Date today = Date.valueOf(LocalDate.now());
+	String today = Date.valueOf(LocalDate.now()).toString();
 
 	@BeforeEach
 	public void setup() {

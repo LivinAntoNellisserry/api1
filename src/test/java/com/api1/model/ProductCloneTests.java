@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 public class ProductCloneTests {
 	
 	ProductClone productClone;
-	Date today = Date.valueOf(LocalDate.now());
+	String today = Date.valueOf(LocalDate.now()).toString();
 
 	@BeforeEach
 	public void setup() {

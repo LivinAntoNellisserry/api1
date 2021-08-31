@@ -149,7 +149,7 @@ public class ProductServiceImpl implements ProductService {
 		productClone.setCloneId(product.getId());
 		productClone.setCloneProductId(product.getProductId());
 		productClone.setCloneProductName(product.getProductName());
-		productClone.setCloneProductExpiryDate(Date.valueOf(product.getProductExpiryDate()));
+		productClone.setCloneProductExpiryDate(product.getProductExpiryDate());
 		return productClone;
 	}
 

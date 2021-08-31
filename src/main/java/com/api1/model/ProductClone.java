@@ -13,7 +13,7 @@ public class ProductClone {
 	Integer cloneId;
 	String cloneProductId;
 	String cloneProductName;
-	Date cloneProductExpiryDate;
+	String cloneProductExpiryDate;
 
 	public Integer getCloneId() {
 		return cloneId;
@@ -39,11 +39,11 @@ public class ProductClone {
 		this.cloneProductName = cloneProductName;
 	}
 
-	public Date getCloneProductExpiryDate() {
+	public String getCloneProductExpiryDate() {
 		return cloneProductExpiryDate;
 	}
 
-	public void setCloneProductExpiryDate(Date cloneProductExpiryDate) {
+	public void setCloneProductExpiryDate(String cloneProductExpiryDate) {
 		this.cloneProductExpiryDate = cloneProductExpiryDate;
 	}
 
@@ -52,4 +52,5 @@ public class ProductClone {
 		return "ProductClone [cloneId=" + cloneId + ", cloneProductId=" + cloneProductId + ", cloneProductName="
 				+ cloneProductName + ", cloneProductExpiryDate=" + cloneProductExpiryDate + "]";
 	}
+
 }
