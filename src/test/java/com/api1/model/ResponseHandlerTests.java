@@ -11,19 +11,19 @@ import org.junit.jupiter.api.Test;
 public class ResponseHandlerTests {
 
 	ResponseHandler responseHandler;
-	Product product;
-	String today = Date.valueOf(LocalDate.now()).toString();
+	ProductClone productClone;
+	Date today = Date.valueOf(LocalDate.now());
 
 	@BeforeEach
 	public void setup() {
-		product = new Product();
-		product.setId(1);
-		product.setProductId("A1");
-		product.setProductName("Rice");
-		product.setProductExpiryDate(today);
+		productClone = new ProductClone();
+		productClone.setCloneId(1);
+		productClone.setCloneProductId("A1");
+		productClone.setCloneProductName("Rice");
+		productClone.setCloneProductExpiryDate(today);
 
 		responseHandler = new ResponseHandler();
-		responseHandler.setProductResponse(product);
+		responseHandler.setProductClone(productClone);
 		responseHandler.setResponseMessage("PRODUCT SAVED");
 		responseHandler.setResponseType("SUCCESS");
 
@@ -31,7 +31,7 @@ public class ResponseHandlerTests {
 
 	@Test
 	public void getProductResponse() {
-		assertEquals(product, responseHandler.getProductResponse(), "getProductResponse not implemented properly");
+		assertEquals(productClone, responseHandler.getProductClone(), "getProductClone not implemented properly");
 	}
 
 	@Test
@@ -48,7 +48,7 @@ public class ResponseHandlerTests {
 	@Test
 	public void toStringTest() {
 		assertEquals(
-				"ResponseHandler [responseType=SUCCESS, responseMessage=PRODUCT SAVED, productResponse=Product [id=1, productId=A1, productName=Rice, productExpiryDate="
+				"ResponseHandler [responseType=SUCCESS, responseMessage=PRODUCT SAVED, productClone=ProductClone [cloneId=1, cloneProductId=A1, cloneProductName=Rice, cloneProductExpiryDate="
 						+ today + "]]",
 				responseHandler.toString(), "toString not implemented properly");
 	}

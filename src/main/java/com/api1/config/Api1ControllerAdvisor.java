@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class Api1ControllerAdvisor {
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<?> validationError(MethodArgumentNotValidException ex) {
+	public ResponseEntity<String> validationError(MethodArgumentNotValidException ex) {
 		BindingResult result = ex.getBindingResult();
 		List<FieldError> fieldErrors = result.getFieldErrors();
-		String error = new String();
+		String error = "";
 		for (FieldError fieldError : fieldErrors) {
 			error = fieldError.getDefaultMessage();
 		}
-		return new ResponseEntity<String>(error, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 
 	}
 

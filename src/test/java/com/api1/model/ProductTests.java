@@ -13,7 +13,6 @@ class ProductTests {
 
 	@Spy
 	Product product;
-	
 	String today = Date.valueOf(LocalDate.now()).toString();
 
 	@BeforeEach

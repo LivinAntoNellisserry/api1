@@ -1,6 +1,7 @@
 package com.api1.controller;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -10,16 +11,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.api1.exception.ProductAlreadyPresentException;
 import com.api1.exception.ProductNotDeletedException;
@@ -31,7 +29,7 @@ import com.google.gson.Gson;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-class Api1ControllerTest {
+class Api1ControllerTests {
 
 	@Autowired
 	private MockMvc mock;
@@ -59,10 +57,9 @@ class Api1ControllerTest {
 		response.setStatus("NOT EXPIRED");
 
 	}
-	
+
 	@AfterEach
-	public void tearDown()
-	{
+	public void tearDown() {
 		product = null;
 		response = null;
 	}
@@ -71,8 +68,8 @@ class Api1ControllerTest {
 	public void getProductById() throws Exception {
 		System.out.println("1");
 		when(service.getProductById(product.getProductId())).thenReturn(response);
-		mock.perform(MockMvcRequestBuilders.get("/api1/search/G1").contentType(MediaType.APPLICATION_JSON)
-				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
+		mock.perform(MockMvcRequestBuilders.get("/api1/search/F1").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
 	}
 
 	@Test
@@ -80,15 +77,15 @@ class Api1ControllerTest {
 		System.out.println("2");
 		when(service.addProduct(product)).thenReturn(response);
 		mock.perform(MockMvcRequestBuilders.post("/api1/add").contentType(MediaType.APPLICATION_JSON)
-				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
+				.content(new Gson().toJson(product)).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
 	@Test
 	public void updateProduct() throws Exception {
 		System.out.println("3");
 		when(service.updateProduct(product)).thenReturn(response);
-		mock.perform(MockMvcRequestBuilders.post("/api1/update").contentType(MediaType.APPLICATION_JSON)
-				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
+		mock.perform(MockMvcRequestBuilders.post("/api1/update").content(new Gson().toJson(product))
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
 	@Test
@@ -96,18 +93,17 @@ class Api1ControllerTest {
 		System.out.println("4");
 		product.setProductExpiryDate("2020-06-25");
 		when(service.deleteProduct(product.getProductId())).thenReturn("SUCCESS");
-		mock.perform(MockMvcRequestBuilders.get("/api1/delete/G1").contentType(MediaType.APPLICATION_JSON)
-				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
+		mock.perform(MockMvcRequestBuilders.get("/api1/delete/G1").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
 
 	}
 
 	@Test
 	public void getProductNotPresent() throws Exception {
 		System.out.println("5");
-
 		when(service.getProductById("F1")).thenThrow(new ProductNotFoundException("PRODUCT ABSENT"));
-		mock.perform(MockMvcRequestBuilders.get("/api1/search/F1").contentType(MediaType.APPLICATION_JSON)
-				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
+		mock.perform(MockMvcRequestBuilders.get("/api1/search/F1").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
 	}
 
 	@Test
@@ -115,15 +111,15 @@ class Api1ControllerTest {
 		System.out.println("6");
 		when(service.addProduct(product)).thenThrow(new ProductAlreadyPresentException("PRODUCT ALREADY PRESENT"));
 		mock.perform(MockMvcRequestBuilders.post("/api1/add").contentType(MediaType.APPLICATION_JSON)
-				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
+				.content(new Gson().toJson(product)).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
 	@Test
 	public void updateProductNotPresent() throws Exception {
 		System.out.println("7");
 		when(service.updateProduct(product)).thenThrow(new ProductNotFoundException("PRODUCT NOT PRESENT"));
-		mock.perform(MockMvcRequestBuilders.post("/api1/update").contentType(MediaType.APPLICATION_JSON)
-				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
+		mock.perform(MockMvcRequestBuilders.post("/api1/update").content(new Gson().toJson(product))
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
 	@Test
@@ -131,8 +127,8 @@ class Api1ControllerTest {
 		System.out.println("8");
 		when(service.deleteProduct(product.getProductId()))
 				.thenThrow(new ProductNotDeletedException("PRODUCT NOT PRESENT"));
-		mock.perform(MockMvcRequestBuilders.get("/api1/delete/G1").contentType(MediaType.APPLICATION_JSON)
-				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
+		mock.perform(MockMvcRequestBuilders.get("/api1/delete/G1").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
 
 	}
 
@@ -141,8 +137,8 @@ class Api1ControllerTest {
 		System.out.println("9");
 		when(service.deleteProduct(product.getProductId()))
 				.thenThrow(new ProductNotDeletedException("PRODUCT NOT EXPIRED"));
-		mock.perform(MockMvcRequestBuilders.get("/api1/delete/G1").contentType(MediaType.APPLICATION_JSON)
-				.content(new Gson().toJson(product))).andExpect(MockMvcResultMatchers.status().isOk());
+		mock.perform(MockMvcRequestBuilders.get("/api1/delete/G1").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
 	}
 
 }

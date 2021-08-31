@@ -12,9 +12,6 @@ import javax.validation.ConstraintValidatorContext;
  *
  */
 public class ProductExpiryDateValidator implements ConstraintValidator<ProductExpiryDate, String> {
-	@Override
-	public void initialize(ProductExpiryDate expDate) {
-	}
 
 	@Override
 	public boolean isValid(String productExpiryDate, ConstraintValidatorContext context) {

@@ -1,0 +1,20 @@
+server:
+  port: 0
+spring:
+  application:
+    name: api-1
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+
+  instance:
+    instance-id: ${spring.application.name}:${random.int}
+get_product_by_id:
+  url: http://api-2/api2/search/{productId}
+post_add_product:
+  url: http://api-2/api2/add
+post_update_product:
+  url: http://api-2/api2/update
+get_delete_product:
+  url: http://api-2/api2/delete/{productId}

@@ -1,5 +1,7 @@
 package com.api1.service;
 
+import java.sql.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import com.api1.exception.ProductAlreadyPresentException;
 import com.api1.exception.ProductNotDeletedException;
 import com.api1.exception.ProductNotFoundException;
 import com.api1.model.Product;
+import com.api1.model.ProductClone;
 import com.api1.model.ResponseHandler;
 import com.api1.model.Response;
 
@@ -20,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProductServiceImpl implements ProductService {
 	private final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
+
+	private static final String FAILED = "FAILED";
 
 	@Value("${get_product_by_id.url}")
 	private String GET_PRODUCT_BY_ID_URI;
@@ -41,7 +46,11 @@ public class ProductServiceImpl implements ProductService {
 
 		ResponseHandler responseHandler = webClientBuilder.build().get().uri(GET_PRODUCT_BY_ID_URI, productId)
 				.retrieve().bodyToMono(ResponseHandler.class).block();
-		if (responseHandler.getResponseType().equals("FAILED")) {
+		if (responseHandler == null) {
+			return null;
+		}
+
+		if (responseHandler.getResponseType().equals(FAILED)) {
 			log.info("Throwed Product Not Found Exception");
 			throw new ProductNotFoundException(responseHandler.getResponseMessage());
 		}
@@ -54,9 +63,12 @@ public class ProductServiceImpl implements ProductService {
 	public Response addProduct(Product product) throws ProductAlreadyPresentException {
 
 		log.info("Called addProduct Service");
-		ResponseHandler responseHandler = webClientBuilder.build().post().uri(POST_ADD_PRODUCT_URI).bodyValue(product)
-				.retrieve().bodyToMono(ResponseHandler.class).block();
-		if (responseHandler.getResponseType().equals("FAILED")) {
+		ResponseHandler responseHandler = webClientBuilder.build().post().uri(POST_ADD_PRODUCT_URI)
+				.bodyValue(this.ProductToProductClone(product)).retrieve().bodyToMono(ResponseHandler.class).block();
+		if (responseHandler == null) {
+			return null;
+		}
+		if (responseHandler.getResponseType().equals(FAILED)) {
 			log.info("Throwed Product Already Present Exception");
 			throw new ProductAlreadyPresentException(responseHandler.getResponseMessage());
 		}
@@ -68,8 +80,11 @@ public class ProductServiceImpl implements ProductService {
 	public Response updateProduct(Product product) throws ProductNotFoundException {
 		log.info("Called updateProductService");
 		ResponseHandler responseHandler = webClientBuilder.build().post().uri(POST_UPDATE_PRODUCT_URI)
-				.bodyValue(product).retrieve().bodyToMono(ResponseHandler.class).block();
-		if (responseHandler.getResponseType().equals("FAILED")) {
+				.bodyValue(this.ProductToProductClone(product)).retrieve().bodyToMono(ResponseHandler.class).block();
+		if (responseHandler == null) {
+			return null;
+		}
+		if (responseHandler.getResponseType().equals(FAILED)) {
 			log.info("Throwed Product Not Found Exception");
 			throw new ProductNotFoundException(responseHandler.getResponseMessage());
 		}
@@ -82,14 +97,16 @@ public class ProductServiceImpl implements ProductService {
 		log.info("Called deleteProduct service");
 		ResponseHandler responseHandler = webClientBuilder.build().get().uri(GET_DELETE_PRODUCT_URI, productId)
 				.retrieve().bodyToMono(ResponseHandler.class).block();
-		if (responseHandler.getResponseType().equals("FAILED")) {
+		if (responseHandler == null) {
+			return null;
+		}
+		if (responseHandler.getResponseType().equals(FAILED)) {
 			log.info("Throwed Product Not Deleted Exception");
 			throw new ProductNotDeletedException(responseHandler.getResponseMessage());
 		}
 		log.info("Product is Deleted");
 		log.info("Exited deleteProduct service");
 		return responseHandler.getResponseMessage();
-
 	}
 
 	/**
@@ -100,10 +117,40 @@ public class ProductServiceImpl implements ProductService {
 	 */
 	private Response getResponse(ResponseHandler responseHandler) {
 		Response response = new Response();
-		Product product = responseHandler.getProductResponse();
+		Product product = this.ProductCloneToProduct((responseHandler.getProductClone()));
 		response.setProduct(product);
 		response.setStatus(responseHandler.getResponseMessage());
 		return response;
+	}
+
+	/**
+	 * Returns a product created from productClone.
+	 * 
+	 * @param productClone
+	 * @return product
+	 */
+	private Product ProductCloneToProduct(ProductClone productClone) {
+		Product product = new Product();
+		product.setId(productClone.getCloneId());
+		product.setProductId(productClone.getCloneProductId());
+		product.setProductName(productClone.getCloneProductName());
+		product.setProductExpiryDate(productClone.getCloneProductExpiryDate().toString());
+		return product;
+	}
+
+	/**
+	 * Return productClone created from product.
+	 * 
+	 * @param product
+	 * @return productClone
+	 */
+	private ProductClone ProductToProductClone(Product product) {
+		ProductClone productClone = new ProductClone();
+		productClone.setCloneId(product.getId());
+		productClone.setCloneProductId(product.getProductId());
+		productClone.setCloneProductName(product.getProductName());
+		productClone.setCloneProductExpiryDate(Date.valueOf(product.getProductExpiryDate()));
+		return productClone;
 	}
 
 }
