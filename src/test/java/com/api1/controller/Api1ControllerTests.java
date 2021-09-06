@@ -35,7 +35,7 @@ class Api1ControllerTests {
 	private MockMvc mock;
 
 	@MockBean
-	private ProductService service;
+	private ProductService serv;
 
 	@InjectMocks
 	private Api1Controller controller;
@@ -58,41 +58,39 @@ class Api1ControllerTests {
 
 	}
 
-	@AfterEach
-	public void tearDown() {
-		product = null;
-		response = null;
-	}
-
 	@Test
 	public void getProductById() throws Exception {
-		System.out.println("1");
-		when(service.getProductById(product.getProductId())).thenReturn(response);
+		
+		System.out.println("getProductById");
+		when(serv.getProductById(product.getProductId())).thenReturn(response);
 		mock.perform(MockMvcRequestBuilders.get("/api1/search/F1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void addProduct() throws Exception {
-		System.out.println("2");
-		when(service.addProduct(product)).thenReturn(response);
+		
+		System.out.println("addProduct");
+		System.out.println(response.getProduct());
+		when(serv.addProduct(product)).thenReturn(response);
+		System.out.println(serv.addProduct(product));
 		mock.perform(MockMvcRequestBuilders.post("/api1/add").contentType(MediaType.APPLICATION_JSON)
 				.content(new Gson().toJson(product)).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
 	@Test
 	public void updateProduct() throws Exception {
-		System.out.println("3");
-		when(service.updateProduct(product)).thenReturn(response);
+		System.out.println("updateProduct");
+		when(serv.updateProduct(product)).thenReturn(response);
 		mock.perform(MockMvcRequestBuilders.post("/api1/update").content(new Gson().toJson(product))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
 	@Test
 	public void deleteProduct() throws Exception {
-		System.out.println("4");
+		System.out.println("deleteProduct");
 		product.setProductExpiryDate("2020-06-25");
-		when(service.deleteProduct(product.getProductId())).thenReturn("SUCCESS");
+		when(serv.deleteProduct(product.getProductId())).thenReturn("SUCCESS");
 		mock.perform(MockMvcRequestBuilders.get("/api1/delete/G1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 
@@ -100,32 +98,32 @@ class Api1ControllerTests {
 
 	@Test
 	public void getProductNotPresent() throws Exception {
-		System.out.println("5");
-		when(service.getProductById("F1")).thenThrow(new ProductNotFoundException("PRODUCT ABSENT"));
+		System.out.println("getProductNotPresent");
+		when(serv.getProductById("F1")).thenThrow(new ProductNotFoundException("PRODUCT ABSENT"));
 		mock.perform(MockMvcRequestBuilders.get("/api1/search/F1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void addProductAlreadyPresent() throws Exception {
-		System.out.println("6");
-		when(service.addProduct(product)).thenThrow(new ProductAlreadyPresentException("PRODUCT ALREADY PRESENT"));
-		mock.perform(MockMvcRequestBuilders.post("/api1/add").contentType(MediaType.APPLICATION_JSON)
-				.content(new Gson().toJson(product)).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+		System.out.println("addProductAlreadyPresent");
+		//when(serv.addProduct(product)).thenThrow(new ProductAlreadyPresentException("PRODUCT ALREADY PRESENT"));
+		mock.perform(MockMvcRequestBuilders.post("/api1/add").content(new Gson().toJson(product))
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
 	@Test
 	public void updateProductNotPresent() throws Exception {
-		System.out.println("7");
-		when(service.updateProduct(product)).thenThrow(new ProductNotFoundException("PRODUCT NOT PRESENT"));
+		System.out.println("updateProductNotPresent");
+		//when(serv.updateProduct(product)).thenThrow(new ProductNotFoundException("PRODUCT NOT PRESENT"));
 		mock.perform(MockMvcRequestBuilders.post("/api1/update").content(new Gson().toJson(product))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
 	@Test
 	public void deleteProductNotPresent() throws Exception {
-		System.out.println("8");
-		when(service.deleteProduct(product.getProductId()))
+		System.out.println("deleteProductNotPresent");
+		when(serv.deleteProduct(product.getProductId()))
 				.thenThrow(new ProductNotDeletedException("PRODUCT NOT PRESENT"));
 		mock.perform(MockMvcRequestBuilders.get("/api1/delete/G1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
@@ -134,8 +132,8 @@ class Api1ControllerTests {
 
 	@Test
 	public void deleteProductNotExpired() throws Exception {
-		System.out.println("9");
-		when(service.deleteProduct(product.getProductId()))
+		System.out.println("deleteProductNotExpired");
+		when(serv.deleteProduct(product.getProductId()))
 				.thenThrow(new ProductNotDeletedException("PRODUCT NOT EXPIRED"));
 		mock.perform(MockMvcRequestBuilders.get("/api1/delete/G1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());

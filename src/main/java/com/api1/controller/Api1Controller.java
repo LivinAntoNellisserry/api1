@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 
 import com.api1.exception.ProductAlreadyPresentException;
 import com.api1.exception.ProductNotDeletedException;
@@ -45,12 +46,14 @@ public class Api1Controller {
 	@ApiOperation(value = "Search by Product ID")
 	public ResponseEntity<Response> getProductById(@PathVariable String productId) {
 		try {
+			System.out.println("=========getProductTry=========");
+			System.out.println(serv.getProductById(productId));
 			return new ResponseEntity<Response>(serv.getProductById(productId), HttpStatus.OK);
 		} catch (ProductNotFoundException e) {
 			Response response = new Response();
 			response.setProduct(null);
 			response.setStatus(e.getMessage());
-			System.out.println("=========getProduct=========");
+			System.out.println("=========getProductCatch=========");
 			return new ResponseEntity<Response>(response, HttpStatus.OK);
 		}
 	}
@@ -67,12 +70,15 @@ public class Api1Controller {
 	public ResponseEntity<Response> addProduct(@RequestBody @Valid Product product) {
 
 		try {
+			System.out.println("=========addProductTry=========");
+			System.out.println(product);
+			System.out.println(serv.addProduct(product));
 			return new ResponseEntity<Response>(serv.addProduct(product), HttpStatus.OK);
 		} catch (ProductAlreadyPresentException e) {
 			Response response = new Response();
 			response.setProduct(null);
 			response.setStatus(e.getMessage());
-			System.out.println("=======add===========");
+			System.out.println("=========addProductCatch=========");
 			return new ResponseEntity<Response>(response, HttpStatus.OK);
 		}
 
@@ -89,12 +95,14 @@ public class Api1Controller {
 	@ApiOperation(value = "Update Product")
 	public ResponseEntity<Response> updateProduct(@RequestBody @Valid Product product) {
 		try {
+			System.out.println("========updateProductTry==========");
+			System.out.println(serv.updateProduct(product));
 			return new ResponseEntity<Response>(serv.updateProduct(product), HttpStatus.OK);
 		} catch (ProductNotFoundException e) {
 			Response response = new Response();
 			response.setProduct(null);
 			response.setStatus(e.getMessage());
-			System.out.println("========update==========");
+			System.out.println("========updateProductCatch==========");
 			return new ResponseEntity<Response>(response, HttpStatus.OK);
 		}
 	}
@@ -109,9 +117,11 @@ public class Api1Controller {
 	@ApiOperation(value = "Delete Product")
 	public ResponseEntity<String> deleteProduct(@PathVariable String productId) {
 		try {
+			System.out.println("========deleteProductTry==========");
+			System.out.println(serv.deleteProduct(productId));
 			return new ResponseEntity<String>(serv.deleteProduct(productId), HttpStatus.OK);
 		} catch (ProductNotDeletedException e) {
-			System.out.println("========delete==========");
+			System.out.println("========deleteProductCatch==========");
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
 		}
 	}

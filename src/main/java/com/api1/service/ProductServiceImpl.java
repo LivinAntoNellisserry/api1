@@ -1,7 +1,5 @@
 package com.api1.service;
 
-import java.sql.Date;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProductServiceImpl implements ProductService {
 	private final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
-
 	private static final String FAILED = "FAILED";
-
 	@Value("${get_product_by_id.url}")
 	private String GET_PRODUCT_BY_ID_URI;
 
@@ -61,6 +57,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	public Response addProduct(Product product) throws ProductAlreadyPresentException {
+		System.out.println("Inside Add Product Service");
 
 		log.info("Called addProduct Service");
 		ResponseHandler responseHandler = webClientBuilder.build().post().uri(POST_ADD_PRODUCT_URI)
