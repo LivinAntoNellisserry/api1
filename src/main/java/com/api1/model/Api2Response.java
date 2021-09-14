@@ -6,7 +6,7 @@ package com.api1.model;
  * responseType, responseMessage and productClone as variables.
  *
  */
-public class ResponseHandler {
+public class Api2Response {
 
 	String responseType;
 	String responseMessage;

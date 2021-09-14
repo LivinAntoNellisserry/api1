@@ -23,7 +23,7 @@ import com.api1.exception.ProductAlreadyPresentException;
 import com.api1.exception.ProductNotDeletedException;
 import com.api1.exception.ProductNotFoundException;
 import com.api1.model.Product;
-import com.api1.model.Response;
+import com.api1.model.Api1Response;
 import com.api1.service.ProductService;
 import com.google.gson.Gson;
 
@@ -41,7 +41,7 @@ class Api1ControllerTests {
 	private Api1Controller controller;
 
 	Product product;
-	Response response;
+	Api1Response response;
 
 	@BeforeEach
 	public void setUp() {
@@ -52,7 +52,7 @@ class Api1ControllerTests {
 		product.setProductName("Noodles");
 		product.setProductExpiryDate(Date.valueOf(LocalDate.now()).toString());
 
-		response = new Response();
+		response = new Api1Response();
 		response.setProduct(product);
 		response.setStatus("NOT EXPIRED");
 

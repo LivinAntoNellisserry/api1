@@ -8,9 +8,9 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ResponseTests {
+public class Api1ResponseTests {
 
-	Response response;
+	Api1Response response;
 	Product product;
 	String today = Date.valueOf(LocalDate.now()).toString();
 
@@ -22,7 +22,7 @@ public class ResponseTests {
 		product.setProductName("Rice");
 		product.setProductExpiryDate(today);
 
-		response = new Response();
+		response = new Api1Response();
 		response.setProduct(product);
 		response.setStatus("SUCCESS");
 	}

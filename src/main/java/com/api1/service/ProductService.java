@@ -4,7 +4,7 @@ import com.api1.exception.ProductAlreadyPresentException;
 import com.api1.exception.ProductNotDeletedException;
 import com.api1.exception.ProductNotFoundException;
 import com.api1.model.Product;
-import com.api1.model.Response;
+import com.api1.model.Api1Response;
 
 public interface ProductService {
 	/**
@@ -14,7 +14,7 @@ public interface ProductService {
 	 * @return response
 	 * @throws ProductNotFoundException
 	 */
-	public Response getProductById(String productId) throws ProductNotFoundException;
+	public Api1Response getProductById(String productId) throws ProductNotFoundException;
 
 	/**
 	 * Saves the product and returns the response containing product and the status.
@@ -23,7 +23,7 @@ public interface ProductService {
 	 * @return response
 	 * @throws ProductAlreadyPresentException
 	 */
-	public Response addProduct(Product product) throws ProductAlreadyPresentException;
+	public Api1Response addProduct(Product product) throws ProductAlreadyPresentException;
 
 	/**
 	 * Updates the product and returns the response containing product and the
@@ -33,7 +33,7 @@ public interface ProductService {
 	 * @return response
 	 * @throws ProductNotFoundException
 	 */
-	public Response updateProduct(Product product) throws ProductNotFoundException;
+	public Api1Response updateProduct(Product product) throws ProductNotFoundException;
 
 	/**
 	 * Deletes the product and returns the message.
