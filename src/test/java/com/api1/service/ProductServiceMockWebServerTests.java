@@ -1,6 +1,5 @@
 package com.api1.service;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
@@ -12,6 +11,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.api1.model.Api1Response;
 import com.api1.model.Api2Response;
@@ -21,11 +21,13 @@ import com.google.gson.Gson;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 public class ProductServiceMockWebServerTests {
 
 	public static MockWebServer mockBackEnd;
-	
+
 	@Autowired
 	ProductServiceImpl productServiceImpl;
 
@@ -42,7 +44,6 @@ public class ProductServiceMockWebServerTests {
 
 	@BeforeEach
 	void initialize() {
-		String baseUrl = String.format("http://api-2", mockBackEnd.getPort(),"/api2/search/");
 		productServiceImpl = new ProductServiceImpl();
 	}
 
@@ -64,12 +65,12 @@ public class ProductServiceMockWebServerTests {
 		api1Response.setProduct(product);
 		api1Response.setStatus("NOT EXPIRED");
 
-		System.out.println(new Gson().toJson(api2Response));
 		mockBackEnd.enqueue(new MockResponse().setBody(new Gson().toJson(api2Response)).addHeader("Content-Type",
 				"application/json"));
 
 		Api1Response response = productServiceImpl.getProductById(productId);
-		assertEquals(api1Response, response, "Problems in Get MEthod");
+		StepVerifier.create(Mono.just(response)).expectNextMatches(resp -> response.getProduct().equals(product))
+				.verifyComplete();
 
 	}
 
