@@ -44,14 +44,11 @@ public class Api1Controller {
 	@ApiOperation(value = "Search by Product ID")
 	public ResponseEntity<Api1Response> getProductById(@PathVariable String productId) {
 		try {
-			System.out.println("=========getProductTry=========");
-			System.out.println(serv.getProductById(productId));
 			return new ResponseEntity<Api1Response>(serv.getProductById(productId), HttpStatus.OK);
 		} catch (ProductNotFoundException e) {
 			Api1Response response = new Api1Response();
 			response.setProduct(null);
 			response.setStatus(e.getMessage());
-			System.out.println("=========getProductCatch=========");
 			return new ResponseEntity<Api1Response>(response, HttpStatus.OK);
 		}
 	}
@@ -68,15 +65,11 @@ public class Api1Controller {
 	public ResponseEntity<Api1Response> addProduct(@RequestBody @Valid Product product) {
 
 		try {
-			System.out.println("=========addProductTry=========");
-			System.out.println(product);
-			System.out.println(serv.addProduct(product));
 			return new ResponseEntity<Api1Response>(serv.addProduct(product), HttpStatus.OK);
 		} catch (ProductAlreadyPresentException e) {
 			Api1Response response = new Api1Response();
 			response.setProduct(null);
 			response.setStatus(e.getMessage());
-			System.out.println("=========addProductCatch=========");
 			return new ResponseEntity<Api1Response>(response, HttpStatus.OK);
 		}
 
@@ -93,14 +86,11 @@ public class Api1Controller {
 	@ApiOperation(value = "Update Product")
 	public ResponseEntity<Api1Response> updateProduct(@RequestBody @Valid Product product) {
 		try {
-			System.out.println("========updateProductTry==========");
-			System.out.println(serv.updateProduct(product));
 			return new ResponseEntity<Api1Response>(serv.updateProduct(product), HttpStatus.OK);
 		} catch (ProductNotFoundException e) {
 			Api1Response response = new Api1Response();
 			response.setProduct(null);
 			response.setStatus(e.getMessage());
-			System.out.println("========updateProductCatch==========");
 			return new ResponseEntity<Api1Response>(response, HttpStatus.OK);
 		}
 	}
@@ -115,11 +105,8 @@ public class Api1Controller {
 	@ApiOperation(value = "Delete Product")
 	public ResponseEntity<String> deleteProduct(@PathVariable String productId) {
 		try {
-			System.out.println("========deleteProductTry==========");
-			System.out.println(serv.deleteProduct(productId));
 			return new ResponseEntity<String>(serv.deleteProduct(productId), HttpStatus.OK);
 		} catch (ProductNotDeletedException e) {
-			System.out.println("========deleteProductCatch==========");
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
 		}
 	}

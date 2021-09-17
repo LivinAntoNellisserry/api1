@@ -57,7 +57,6 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	public Api1Response addProduct(Product product) throws ProductAlreadyPresentException {
-		System.out.println("Inside Add Product Service");
 
 		log.info("Called addProduct Service");
 		Api2Response api2Response = webClient.post().uri(POST_ADD_PRODUCT_URI)
