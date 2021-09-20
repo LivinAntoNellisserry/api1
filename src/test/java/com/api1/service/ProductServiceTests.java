@@ -1,107 +1,166 @@
 package com.api1.service;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-import java.sql.Date;
-import java.time.LocalDate;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.api1.exception.ProductNotFoundException;
+import com.api1.model.Api1Response;
+import com.api1.model.Api2Response;
 import com.api1.model.Product;
 import com.api1.model.ProductClone;
-import com.api1.model.Response;
-import com.api1.model.ResponseHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-@RunWith(SpringRunner.class)
+import reactor.core.publisher.Mono;
+
 @SpringBootTest
+@ExtendWith(SpringExtension.class)
 public class ProductServiceTests {
 
 	@Autowired
-	ProductService productService;
-	
-	@MockBean
-	WebClient.Builder webClientBuilder;
-	
+	ProductServiceImpl service;
+
+	Api2Response api2Response;
 	Product product;
-	Response response;
-	ProductClone productClone;
-	ResponseHandler responseHandler;
-	
-	
-	@Value("${get_product_by_id.url}")
-	private String GET_PRODUCT_BY_ID_URI;
+	ObjectMapper objectMapper;
 
-	@Value("${post_add_product.url}")
-	private String POST_ADD_PRODUCT_URI;
+	@MockBean
+	WebClient webClientMock;
 
-	@Value("${post_update_product.url}")
-	private String POST_UPDATE_PRODUCT_URI;
+	@Mock
+	private WebClient.RequestBodyUriSpec requestBodyUriSpecMock;
 
-	@Value("${get_delete_product.url}")
-	private String GET_DELETE_PRODUCT_URI;
-	
-	
+	@Mock
+	private WebClient.RequestBodySpec requestBodySpecMock;
+
+	@SuppressWarnings("rawtypes")
+	@Mock
+	private WebClient.RequestHeadersSpec requestHeadersSpecMock;
+
+	@SuppressWarnings("rawtypes")
+	@Mock
+	private WebClient.RequestHeadersUriSpec requestHeadersUriSpecMock;
+
+	@Mock
+	private WebClient.ResponseSpec responseSpecMock;
+
+	@Mock
+	private Mono<Api2Response> monoApi2Resp;
+
 	@BeforeEach
-	public void setup()
-	{
+	public void setup() {
+		api2Response = new Api2Response();
 		product = new Product();
-		product.setId(1);
-		product.setProductExpiryDate(Date.valueOf(LocalDate.now()).toString());
-		product.setProductId("A1");
-		product.setProductName("Burger");
-		
-		response = new Response();
-		response.setProduct(product);
-		response.setStatus("NOT EXPIRED");
-		
-		responseHandler = new ResponseHandler();
-		responseHandler.setProductClone(this.ProductToProductClone(product));
-		responseHandler.setResponseMessage("NOT EXPIRED");
-		responseHandler.setResponseType("SUCCESS");
-	}
-	
-	@AfterEach
-	public void tearDown()
-	{
-		product = null;
-		response = null;
-		responseHandler = null;
-	}
-	
-	@Test
-	public void getProductById() throws Exception
-	{
-		
-		
-	}
-	
-	private Product ProductCloneToProduct(ProductClone productClone) {
-		Product product = new Product();
-		product.setId(productClone.getCloneId());
-		product.setProductId(productClone.getCloneProductId());
-		product.setProductName(productClone.getCloneProductName());
-		product.setProductExpiryDate(productClone.getCloneProductExpiryDate().toString());
-		return product;
 	}
 
-	private ProductClone ProductToProductClone(Product product) {
+	@SuppressWarnings("unchecked")
+	@Test
+	public void getProductById() throws Exception {
+
+		product.setId(1);
+		product.setProductId("G1");
+		product.setProductName("Noodles");
+		product.setProductExpiryDate("2021-12-12");
+
+		api2Response.setProductClone(this.getProductClone(product));
+		api2Response.setResponseMessage("NOT EXPIRED");
+		api2Response.setResponseType("SUCCESS");
+
+		when(webClientMock.get()).thenReturn(requestHeadersUriSpecMock);
+		when(requestHeadersUriSpecMock.uri(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(requestHeadersSpecMock);
+		when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
+		when(responseSpecMock.bodyToMono(ArgumentMatchers.<Class<Api2Response>>notNull())).thenReturn(monoApi2Resp);
+		when(monoApi2Resp.block()).thenReturn(api2Response);
+
+		Api1Response actualApi1Response = service.getProductById("G1");
+		assertEquals("NOT EXPIRED", actualApi1Response.getStatus());
+
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void addProduct() throws Exception {
+		product.setId(1);
+		product.setProductId("G1");
+		product.setProductName("Noodles");
+		product.setProductExpiryDate("2021-12-12");
+
+		api2Response.setProductClone(this.getProductClone(product));
+		api2Response.setResponseMessage("PRODUCT SAVED");
+		api2Response.setResponseType("SUCCESS");
+
+		when(webClientMock.post()).thenReturn(requestBodyUriSpecMock);
+		when(requestBodyUriSpecMock.uri(Mockito.anyString())).thenReturn(requestBodySpecMock);
+		when(requestBodySpecMock.header(Mockito.any(), Mockito.any())).thenReturn(requestBodySpecMock);
+		when(requestBodySpecMock.bodyValue(Mockito.any())).thenReturn(requestHeadersSpecMock);
+		when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
+		when(responseSpecMock.bodyToMono(ArgumentMatchers.<Class<Api2Response>>notNull())).thenReturn(monoApi2Resp);
+		when(monoApi2Resp.block()).thenReturn(api2Response);
+		Api1Response actualApi1Response = service.addProduct(product);
+		assertEquals("PRODUCT SAVED", actualApi1Response.getStatus());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void updateProduct() throws Exception {
+		product.setId(1);
+		product.setProductId("G1");
+		product.setProductName("Noodles");
+		product.setProductExpiryDate("2021-12-12");
+
+		api2Response.setProductClone(this.getProductClone(product));
+		api2Response.setResponseMessage("PRODUCT UPDATED");
+		api2Response.setResponseType("SUCCESS");
+
+		when(webClientMock.post()).thenReturn(requestBodyUriSpecMock);
+		when(requestBodyUriSpecMock.uri(Mockito.anyString())).thenReturn(requestBodySpecMock);
+		when(requestBodySpecMock.header(Mockito.any(), Mockito.any())).thenReturn(requestBodySpecMock);
+		when(requestBodySpecMock.bodyValue(Mockito.any())).thenReturn(requestHeadersSpecMock);
+		when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
+		when(responseSpecMock.bodyToMono(ArgumentMatchers.<Class<Api2Response>>notNull())).thenReturn(monoApi2Resp);
+		when(monoApi2Resp.block()).thenReturn(api2Response);
+		Api1Response actualApi1Response = service.updateProduct(product);
+		assertEquals("PRODUCT UPDATED", actualApi1Response.getStatus());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void deleteProduct() throws Exception {
+
+		api2Response.setProductClone(null);
+		api2Response.setResponseMessage("PRODUCT EXPIRED AND DELETED");
+		api2Response.setResponseType("SUCCESS");
+
+		when(webClientMock.get()).thenReturn(requestHeadersUriSpecMock);
+		when(requestHeadersUriSpecMock.uri(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(requestHeadersSpecMock);
+		when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
+		when(responseSpecMock.bodyToMono(ArgumentMatchers.<Class<Api2Response>>notNull())).thenReturn(monoApi2Resp);
+		when(monoApi2Resp.block()).thenReturn(api2Response);
+
+		String actualApi1Response = service.deleteProduct("G1");
+		assertEquals("PRODUCT EXPIRED AND DELETED", actualApi1Response);
+
+	}
+
+	private ProductClone getProductClone(Product product) {
 		ProductClone productClone = new ProductClone();
 		productClone.setCloneId(product.getId());
+		productClone.setCloneProductExpiryDate(product.getProductExpiryDate().toString());
 		productClone.setCloneProductId(product.getProductId());
 		productClone.setCloneProductName(product.getProductName());
-		productClone.setCloneProductExpiryDate(product.getProductExpiryDate());
 		return productClone;
 	}
+
 }

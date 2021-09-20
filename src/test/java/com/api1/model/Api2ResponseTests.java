@@ -8,9 +8,9 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ResponseHandlerTests {
+public class Api2ResponseTests {
 
-	ResponseHandler responseHandler;
+	Api2Response responseHandler;
 	ProductClone productClone;
 	String today = Date.valueOf(LocalDate.now()).toString();
 
@@ -22,7 +22,7 @@ public class ResponseHandlerTests {
 		productClone.setCloneProductName("Rice");
 		productClone.setCloneProductExpiryDate(today);
 
-		responseHandler = new ResponseHandler();
+		responseHandler = new Api2Response();
 		responseHandler.setProductClone(productClone);
 		responseHandler.setResponseMessage("PRODUCT SAVED");
 		responseHandler.setResponseType("SUCCESS");
