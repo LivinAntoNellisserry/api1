@@ -2,6 +2,8 @@ package com.api1.controller;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+
 import com.api1.exception.ProductAlreadyPresentException;
 import com.api1.exception.ProductNotDeletedException;
 import com.api1.exception.ProductNotFoundException;
@@ -20,6 +24,7 @@ import com.api1.service.ProductService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 
@@ -27,12 +32,15 @@ import io.swagger.annotations.ApiOperation;
  *
  */
 @RestController
+@Slf4j
 @Api
 @RequestMapping("/api1")
 public class Api1Controller {
 
 	@Autowired
 	ProductService serv;
+
+	private final Logger log = LoggerFactory.getLogger(Api1Controller.class);
 
 	/**
 	 * Returns a response for productId.
@@ -44,11 +52,16 @@ public class Api1Controller {
 	@ApiOperation(value = "Search by Product ID")
 	public ResponseEntity<Api1Response> getProductById(@PathVariable String productId) {
 		try {
+			log.info("Hit Api1Controller");
+			log.info("Called getProductById");
+			log.debug("with productId = " + productId);
 			return new ResponseEntity<Api1Response>(serv.getProductById(productId), HttpStatus.OK);
-		} catch (ProductNotFoundException e) {
+		} catch (ProductNotFoundException | WebClientResponseException e) {
 			Api1Response response = new Api1Response();
 			response.setProduct(null);
 			response.setStatus(e.getMessage());
+			log.info("Executed catch block of getProductById in Api1Controller");
+			log.debug("Cause : " + e.toString());
 			return new ResponseEntity<Api1Response>(response, HttpStatus.OK);
 		}
 	}
@@ -65,11 +78,16 @@ public class Api1Controller {
 	public ResponseEntity<Api1Response> addProduct(@RequestBody @Valid Product product) {
 
 		try {
+			log.info("Hit Api1Controller");
+			log.info("Called addProduct");
+			log.debug("with " + product.toString() + " as Body");
 			return new ResponseEntity<Api1Response>(serv.addProduct(product), HttpStatus.OK);
-		} catch (ProductAlreadyPresentException e) {
+		} catch (ProductAlreadyPresentException | WebClientResponseException e) {
 			Api1Response response = new Api1Response();
 			response.setProduct(null);
 			response.setStatus(e.getMessage());
+			log.info("Executed catch block of addProduct in Api1Controller");
+			log.debug("Cause : " + e.toString());
 			return new ResponseEntity<Api1Response>(response, HttpStatus.OK);
 		}
 
@@ -86,11 +104,16 @@ public class Api1Controller {
 	@ApiOperation(value = "Update Product")
 	public ResponseEntity<Api1Response> updateProduct(@RequestBody @Valid Product product) {
 		try {
+			log.info("Hit Api1Controller");
+			log.info("Called updateProduct");
+			log.debug("with " + product.toString() + " as Body");
 			return new ResponseEntity<Api1Response>(serv.updateProduct(product), HttpStatus.OK);
-		} catch (ProductNotFoundException e) {
+		} catch (ProductNotFoundException | WebClientResponseException e) {
 			Api1Response response = new Api1Response();
 			response.setProduct(null);
 			response.setStatus(e.getMessage());
+			log.info("Executed catch block of updateProduct in Api1Controller");
+			log.debug("Cause : " + e.toString());
 			return new ResponseEntity<Api1Response>(response, HttpStatus.OK);
 		}
 	}
@@ -105,8 +128,13 @@ public class Api1Controller {
 	@ApiOperation(value = "Delete Product")
 	public ResponseEntity<String> deleteProduct(@PathVariable String productId) {
 		try {
+			log.info("Hit Api1Controller");
+			log.info("Called deleteProduct");
+			log.debug("with productId = " + productId);
 			return new ResponseEntity<String>(serv.deleteProduct(productId), HttpStatus.OK);
-		} catch (ProductNotDeletedException e) {
+		} catch (ProductNotDeletedException | WebClientResponseException e) {
+			log.info("Executed catch block of deleteProduct in Api1Controller");
+			log.debug("Cause : " + e.toString());
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
 		}
 	}

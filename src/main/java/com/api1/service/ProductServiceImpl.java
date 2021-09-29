@@ -38,20 +38,26 @@ public class ProductServiceImpl implements ProductService {
 	WebClient webClient;
 
 	public Api1Response getProductById(String productId) throws ProductNotFoundException {
-		log.info("Called getProductById service");
-
+		log.info("Called getProductById Service");
+		log.debug("with productId = " + productId);
+		log.debug("Call to " + GET_PRODUCT_BY_ID_URI + " with " + productId + " as PathVariable");
 		Api2Response api2Response = webClient.get().uri(GET_PRODUCT_BY_ID_URI, productId).retrieve()
 				.bodyToMono(Api2Response.class).block();
 		if (api2Response == null) {
+			log.warn("Api2Service returned a null");
+			log.error("Unexpected error, Api2Service cannot return null");
 			return null;
 		}
 
 		if (api2Response.getResponseType().equals(FAILED)) {
-			log.info("Throwed Product Not Found Exception");
+			log.info("Couldnt find product");
+			log.debug("with productId = " + productId);
+			log.info("Throwed ProductNotFoundException");
 			throw new ProductNotFoundException(api2Response.getResponseMessage());
 		}
 		log.info("Product was found");
-		log.info("Exited getProductById service");
+		log.debug(api2Response.toString());
+		log.info("Exited getProductById Service");
 		return this.getResponse(api2Response);
 
 	}
@@ -59,49 +65,70 @@ public class ProductServiceImpl implements ProductService {
 	public Api1Response addProduct(Product product) throws ProductAlreadyPresentException {
 
 		log.info("Called addProduct Service");
+		log.debug("with " + product.toString());
+		log.debug("Call to " + POST_ADD_PRODUCT_URI + " with " + product.toString() + " as Body");
 		Api2Response api2Response = webClient.post().uri(POST_ADD_PRODUCT_URI)
 				.bodyValue(this.ProductToProductClone(product)).retrieve().bodyToMono(Api2Response.class).block();
 		if (api2Response == null) {
+			log.warn("Api2Service returned a null");
+			log.error("Unexpected error, Api2Service cannot return null");
 			return null;
 		}
 		if (api2Response.getResponseType().equals(FAILED)) {
-			log.info("Throwed Product Already Present Exception");
+			log.info("Couldnt add product");
+			log.debug(product.toString());
+			log.info("Throwed ProductAlreadyPresentException");
 			throw new ProductAlreadyPresentException(api2Response.getResponseMessage());
 		}
 		log.info("Product was Added");
-		log.info("Exited addProduct service");
+		log.debug(api2Response.toString());
+		log.info("Exited addProduct Service");
 		return this.getResponse(api2Response);
 	}
 
 	public Api1Response updateProduct(Product product) throws ProductNotFoundException {
-		log.info("Called updateProductService");
+		log.info("Called updateProduct Service");
+		log.debug("with " + product.toString());
+		log.debug("Call to " + POST_UPDATE_PRODUCT_URI + " with " + product.toString() + " as Body");
 		Api2Response api2Response = webClient.post().uri(POST_UPDATE_PRODUCT_URI)
 				.bodyValue(this.ProductToProductClone(product)).retrieve().bodyToMono(Api2Response.class).block();
 		if (api2Response == null) {
+			log.warn("Api2Service returned a null");
+			log.error("Unexpected error, Api2Service cannot return null");
 			return null;
 		}
 		if (api2Response.getResponseType().equals(FAILED)) {
-			log.info("Throwed Product Not Found Exception");
+			log.info("Couldnt update product");
+			log.debug(product.toString());
+			log.info("Throwed ProductNotFoundException");
 			throw new ProductNotFoundException(api2Response.getResponseMessage());
 		}
 		log.info("Product was Updated");
-		log.info("Exited updateProduct service");
+		log.debug(api2Response.toString());
+		log.info("Exited updateProduct Service");
 		return this.getResponse(api2Response);
 	}
 
 	public String deleteProduct(String productId) throws ProductNotDeletedException {
-		log.info("Called deleteProduct service");
+		log.info("Called deleteProduct Service");
+		log.debug("with productId = " + productId);
+		log.debug("Call to " + GET_DELETE_PRODUCT_URI + " with " + productId + " as PathVariable");
 		Api2Response api2Response = webClient.get().uri(GET_DELETE_PRODUCT_URI, productId).retrieve()
 				.bodyToMono(Api2Response.class).block();
 		if (api2Response == null) {
+			log.warn("Api2Service returned a null");
+			log.error("Unexpected error, Api2Service cannot return null");
 			return null;
 		}
 		if (api2Response.getResponseType().equals(FAILED)) {
-			log.info("Throwed Product Not Deleted Exception");
+			log.info("Couldnt delete product");
+			log.debug("with productId = " + productId);
+			log.info("Throwed ProductNotDeletedException");
 			throw new ProductNotDeletedException(api2Response.getResponseMessage());
 		}
-		log.info("Product is Deleted");
-		log.info("Exited deleteProduct service");
+		log.info("Product was deleted");
+		log.debug(api2Response.toString());
+		log.info("Exited deleteProduct Service");
 		return api2Response.getResponseMessage();
 	}
 
