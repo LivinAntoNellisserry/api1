@@ -41,6 +41,7 @@ public class Api1Controller {
 	ProductService serv;
 
 	private final Logger log = LoggerFactory.getLogger(Api1Controller.class);
+	private static final String HITAPI1 = "Hit Api1Controller";
 
 	/**
 	 * Returns a response for productId.
@@ -52,16 +53,18 @@ public class Api1Controller {
 	@ApiOperation(value = "Search by Product ID")
 	public ResponseEntity<Api1Response> getProductById(@PathVariable String productId) {
 		try {
-			log.info("Hit Api1Controller");
+			log.info(HITAPI1);
 			log.info("Called getProductById");
-			log.debug("with productId = " + productId);
+			log.debug(productId);
 			return new ResponseEntity<Api1Response>(serv.getProductById(productId), HttpStatus.OK);
 		} catch (ProductNotFoundException | WebClientResponseException e) {
 			Api1Response response = new Api1Response();
 			response.setProduct(null);
 			response.setStatus(e.getMessage());
-			log.info("Executed catch block of getProductById in Api1Controller");
-			log.debug("Cause : " + e.toString());
+			log.info("Exception occured executed catch block of getProductById in Api1Controller");
+			if (log.isDebugEnabled()) {
+				log.debug(e.toString());
+			}
 			return new ResponseEntity<Api1Response>(response, HttpStatus.OK);
 		}
 	}
@@ -78,16 +81,20 @@ public class Api1Controller {
 	public ResponseEntity<Api1Response> addProduct(@RequestBody @Valid Product product) {
 
 		try {
-			log.info("Hit Api1Controller");
+			log.info(HITAPI1);
 			log.info("Called addProduct");
-			log.debug("with " + product.toString() + " as Body");
+			if (log.isDebugEnabled()) {
+				log.debug(product.toString());
+			}
 			return new ResponseEntity<Api1Response>(serv.addProduct(product), HttpStatus.OK);
 		} catch (ProductAlreadyPresentException | WebClientResponseException e) {
 			Api1Response response = new Api1Response();
 			response.setProduct(null);
 			response.setStatus(e.getMessage());
-			log.info("Executed catch block of addProduct in Api1Controller");
-			log.debug("Cause : " + e.toString());
+			log.info("Exception occured executed catch block of addProduct in Api1Controller");
+			if (log.isDebugEnabled()) {
+				log.debug(e.toString());
+			}
 			return new ResponseEntity<Api1Response>(response, HttpStatus.OK);
 		}
 
@@ -104,16 +111,20 @@ public class Api1Controller {
 	@ApiOperation(value = "Update Product")
 	public ResponseEntity<Api1Response> updateProduct(@RequestBody @Valid Product product) {
 		try {
-			log.info("Hit Api1Controller");
+			log.info(HITAPI1);
 			log.info("Called updateProduct");
-			log.debug("with " + product.toString() + " as Body");
+			if (log.isDebugEnabled()) {
+				log.debug(product.toString());
+			}
 			return new ResponseEntity<Api1Response>(serv.updateProduct(product), HttpStatus.OK);
 		} catch (ProductNotFoundException | WebClientResponseException e) {
 			Api1Response response = new Api1Response();
 			response.setProduct(null);
 			response.setStatus(e.getMessage());
-			log.info("Executed catch block of updateProduct in Api1Controller");
-			log.debug("Cause : " + e.toString());
+			log.info("Exception occured executed catch block of updateProduct in Api1Controller");
+			if (log.isDebugEnabled()) {
+				log.debug(e.toString());
+			}
 			return new ResponseEntity<Api1Response>(response, HttpStatus.OK);
 		}
 	}
@@ -128,13 +139,15 @@ public class Api1Controller {
 	@ApiOperation(value = "Delete Product")
 	public ResponseEntity<String> deleteProduct(@PathVariable String productId) {
 		try {
-			log.info("Hit Api1Controller");
+			log.info(HITAPI1);
 			log.info("Called deleteProduct");
-			log.debug("with productId = " + productId);
+			log.debug(productId);
 			return new ResponseEntity<String>(serv.deleteProduct(productId), HttpStatus.OK);
 		} catch (ProductNotDeletedException | WebClientResponseException e) {
-			log.info("Executed catch block of deleteProduct in Api1Controller");
-			log.debug("Cause : " + e.toString());
+			log.info("Exception occured executed catch block of deleteProduct in Api1Controller");
+			if (log.isDebugEnabled()) {
+				log.debug(e.toString());
+			}
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
 		}
 	}

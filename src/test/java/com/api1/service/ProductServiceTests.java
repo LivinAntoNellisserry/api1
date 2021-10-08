@@ -1,6 +1,7 @@
 package com.api1.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -152,6 +153,74 @@ public class ProductServiceTests {
 		String actualApi1Response = service.deleteProduct("G1");
 		assertEquals("PRODUCT EXPIRED AND DELETED", actualApi1Response);
 
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void getProductReturnNull() throws Exception {
+		when(webClientMock.get()).thenReturn(requestHeadersUriSpecMock);
+		when(requestHeadersUriSpecMock.uri(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(requestHeadersSpecMock);
+		when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
+		when(responseSpecMock.bodyToMono(ArgumentMatchers.<Class<Api2Response>>notNull())).thenReturn(monoApi2Resp);
+		when(monoApi2Resp.block()).thenReturn(null);
+
+		assertNull(service.getProductById("G1"));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void addProductReturnNull() throws Exception
+	{
+		product.setId(1);
+		product.setProductId("G1");
+		product.setProductName("Noodles");
+		product.setProductExpiryDate("2021-12-12");
+
+		when(webClientMock.post()).thenReturn(requestBodyUriSpecMock);
+		when(requestBodyUriSpecMock.uri(Mockito.anyString())).thenReturn(requestBodySpecMock);
+		when(requestBodySpecMock.header(Mockito.any(), Mockito.any())).thenReturn(requestBodySpecMock);
+		when(requestBodySpecMock.bodyValue(Mockito.any())).thenReturn(requestHeadersSpecMock);
+		when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
+		when(responseSpecMock.bodyToMono(ArgumentMatchers.<Class<Api2Response>>notNull())).thenReturn(monoApi2Resp);
+		when(monoApi2Resp.block()).thenReturn(null);
+		
+		assertNull(service.addProduct(product));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void updateProductReturnNull() throws Exception
+	{
+		product.setId(1);
+		product.setProductId("G1");
+		product.setProductName("Noodles");
+		product.setProductExpiryDate("2021-12-12");
+
+		when(webClientMock.post()).thenReturn(requestBodyUriSpecMock);
+		when(requestBodyUriSpecMock.uri(Mockito.anyString())).thenReturn(requestBodySpecMock);
+		when(requestBodySpecMock.header(Mockito.any(), Mockito.any())).thenReturn(requestBodySpecMock);
+		when(requestBodySpecMock.bodyValue(Mockito.any())).thenReturn(requestHeadersSpecMock);
+		when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
+		when(responseSpecMock.bodyToMono(ArgumentMatchers.<Class<Api2Response>>notNull())).thenReturn(monoApi2Resp);
+		when(monoApi2Resp.block()).thenReturn(null);
+		
+		assertNull(service.updateProduct(product));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void deleteProductReturnNull() throws Exception
+	{
+		when(webClientMock.get()).thenReturn(requestHeadersUriSpecMock);
+		when(requestHeadersUriSpecMock.uri(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(requestHeadersSpecMock);
+		when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
+		when(responseSpecMock.bodyToMono(ArgumentMatchers.<Class<Api2Response>>notNull())).thenReturn(monoApi2Resp);
+		when(monoApi2Resp.block()).thenReturn(null);
+		
+		assertNull(service.deleteProduct("G1"));
+		
 	}
 
 	private ProductClone getProductClone(Product product) {

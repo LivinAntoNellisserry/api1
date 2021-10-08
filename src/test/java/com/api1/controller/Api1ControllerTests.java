@@ -6,11 +6,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.sql.Date;
 import java.time.LocalDate;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,9 +18,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.api1.exception.ProductAlreadyPresentException;
-import com.api1.exception.ProductNotDeletedException;
-import com.api1.exception.ProductNotFoundException;
 import com.api1.model.Product;
 import com.api1.model.Api1Response;
 import com.api1.service.ProductService;
