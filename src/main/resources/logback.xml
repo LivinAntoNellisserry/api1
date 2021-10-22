@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xml>
-<configuration debug="false">
+<configuration debug="true">
 	<property name="LOG_FILE_LOCATION" value="logs" />
 	<property name="LOG_FILE_NAME" value="Api1" />
 	<property name="LOG_FILE_EXTENSION" value=".log" />
@@ -25,7 +25,7 @@
 		</encoder>
 	</appender>
 	<!-- Send logs to both console and file audit -->
-	<logger name="com.api1" level="info" additivity="false">
+	<logger name="com.api1" level="debug" additivity="false">
 		<appender-ref ref="FILE-AUDIT" />
 		<appender-ref ref="STDOUT" />
 	</logger>
